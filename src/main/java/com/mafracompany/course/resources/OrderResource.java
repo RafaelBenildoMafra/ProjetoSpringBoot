@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.mafracompany.course.entities.Order;
+import com.mafracompany.course.entities.enums.OrderStatus;
 import com.mafracompany.course.services.OrderService;
 
 @RestController
