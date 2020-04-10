@@ -9,10 +9,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import com.mafracompany.course.entities.Category;
 import com.mafracompany.course.entities.Order;
+import com.mafracompany.course.entities.OrderItem;
 import com.mafracompany.course.entities.Product;
 import com.mafracompany.course.entities.User;
 import com.mafracompany.course.entities.enums.OrderStatus;
 import com.mafracompany.course.repositories.CategoryRepository;
+import com.mafracompany.course.repositories.OrderItemRepository;
 import com.mafracompany.course.repositories.OrderRepository;
 import com.mafracompany.course.repositories.ProductRepository;
 import com.mafracompany.course.repositories.UserRepository;
@@ -34,6 +36,8 @@ public class TesteConfig implements CommandLineRunner{
 	@Autowired
 	private ProductRepository productRepository;
 	
+	@Autowired
+	private OrderItemRepository orderItemRepository;
 	
 	
 	//EXECUTA QUANDO A APLICAÇÃO FOR INICIADA PORCAUSA DO METODO RUN
@@ -57,10 +61,6 @@ public class TesteConfig implements CommandLineRunner{
 		Product p4 = new Product(null, "PC Gamer", "Donec aliquet odio ac rhoncus cursus.", 1200.0, ""); 
 		Product p5 = new Product(null, "Rails for Dummies", "Cras fringilla convallis sem vel faucibus.", 100.99, ""); 
 		
-		
-		categoryRepository.saveAll(Arrays.asList(cat1,cat2,cat3));
-		productRepository.saveAll(Arrays.asList(p1, p2, p3, p4, p5));
-		
 		p1.getCategories().add(cat2);
 		p2.getCategories().add(cat1);
 		p2.getCategories().add(cat3);
@@ -68,10 +68,16 @@ public class TesteConfig implements CommandLineRunner{
 		p4.getCategories().add(cat3);
 		p5.getCategories().add(cat2);
 		
-		productRepository.saveAll(Arrays.asList(p1, p2 ,p3 ,p4 ,p5));
+		OrderItem oi1 = new OrderItem(o1, p1, 2, p1.getPrice());
+		OrderItem oi2 = new OrderItem(o1, p3, 1, p3.getPrice());
+		OrderItem oi3 = new OrderItem(o2, p3, 2, p3.getPrice());
+		OrderItem oi4 = new OrderItem(o3, p5, 2, p5.getPrice());
 		
+		categoryRepository.saveAll(Arrays.asList(cat1,cat2,cat3));
+		productRepository.saveAll(Arrays.asList(p1, p2, p3, p4, p5));
 		userRepository.saveAll(Arrays.asList(u1, u2));
 		orderRepository.saveAll(Arrays.asList(o1, o2, o3));
+		orderItemRepository.saveAll(Arrays.asList(oi1, oi2 ,oi3, oi4));
 			
 	} 	 
 
