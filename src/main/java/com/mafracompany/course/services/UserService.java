@@ -3,11 +3,16 @@ package com.mafracompany.course.services;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import javax.persistence.EntityNotFoundException;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.stereotype.Service;
 import com.mafracompany.course.entities.User;
 import com.mafracompany.course.repositories.UserRepository;
+import com.mafracompany.course.services.exceptions.DataBaseException;
+import com.mafracompany.course.services.exceptions.ResourceNotFoundException;
 
 
 //REGISTRA COMO UM COMPONENTE DO SPRING E PODE SER IJETADO AUTOMATICAMENTE COM O AUTOWIRED
@@ -26,7 +31,7 @@ public class UserService {
 	public User findById(Long id) {
 		
 		Optional<User> obj = repository.findById(id);
-		return obj.get();
+		return obj.orElseThrow(() -> new ResourceNotFoundException(id));
 		
 	}
 	
@@ -36,15 +41,35 @@ public class UserService {
 	}
 	
 	public void  delete(Long id) {
+		try {
+			
+			repository.deleteById(id);
+			
+		}catch(EmptyResultDataAccessException e) {
+			
+			throw new ResourceNotFoundException(id);
+			
+		}catch (DataIntegrityViolationException e) {
+			
+			throw new DataBaseException(e.getMessage());
+		}
 		
-		repository.deleteById(id);
 	}
 	
 	public User update(Long id, User obj) {
 		
-		User entity = repository.getOne(id);
-		updateData(entity, obj);
-		return repository.save(entity);
+		try {
+			
+			User entity = repository.getOne(id);
+			updateData(entity, obj);
+			return repository.save(entity);
+		
+		}catch(EntityNotFoundException e) {
+			
+			throw new ResourceNotFoundException(e.getMessage());
+		}
+		
+		
 
 	}
 
