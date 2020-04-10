@@ -110,6 +110,19 @@ public class Order implements Serializable{
 		
 		return items;
 	}
+	
+	//PADRAO JAVA EE
+	public Double getTotal() {
+		double sum = 0.0;
+		
+		for(OrderItem x : items) {//retorna a soma total do pedido
+			
+			sum += x.getSubTotal();//soma dos subtotais
+			
+		}
+		
+		return sum;
+	}
 
 	@Override
 	public int hashCode() {
