@@ -11,7 +11,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "tb_product")
@@ -22,7 +25,7 @@ public class Product implements Serializable{
 	
 	@Id //CRIA A TABELA
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private Long id;
 	private String name;
 	private String description;
 	private Double price;
@@ -35,11 +38,15 @@ public class Product implements Serializable{
 	
 	private Set<Category> categories = new HashSet<>();
 	
+	//SET NAO ADMITE REPETIÇÃO DO MESMO ITEM
+	@OneToMany(mappedBy = "id.order")//ID.ORDER PORQUE O ORDERITEM TEM O ATRIBUTO ID E O ORDERITEM_PK TEM O ATRIBUTO ORDER
+	private Set<OrderItem> items = new HashSet<>();
+	
 	public Product(){
 		
 	}
 	
-	public Product(Integer id, String name, String description, Double price, String imgUrl) {
+	public Product(Long id, String name, String description, Double price, String imgUrl) {
 		
 		this.id = id;
 		this.name = name;
@@ -49,11 +56,11 @@ public class Product implements Serializable{
 		
 	}
 
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -92,6 +99,20 @@ public class Product implements Serializable{
 	public Set<Category> getCategories() {
 		
 		return categories;
+	}
+	
+	@JsonIgnore
+	public Set<Order> getOrders(){
+		
+		Set<Order> set = new HashSet<>();
+		
+		//PERCORRE A COLEÇÃO ITEM - DO TIPO ORDER ITEM ASSOCIADO AO PRODUTO
+		for(OrderItem x : items) {
+			
+			set.add(x.getOrder());//PARA CADA ELEMENTO ADICIONA O X.GET_ORDER
+		}
+		
+		return set;
 	}
 
 	@Override
